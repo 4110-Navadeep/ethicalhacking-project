@@ -1,0 +1,19 @@
+services:
+  # ===========================================================================
+  # SINGLE-SERVICE COMBINED WEB SERVICE
+  # Serves both the FastAPI backend and production-compiled React frontend
+  # from a single Render Web Service on a single public URL.
+  # ===========================================================================
+  - type: web
+    name: vulntriage-framework
+    runtime: python
+    region: oregon
+    plan: free
+    buildCommand: pip install -r backend/requirements.txt && cd frontend && npm install && npm run build && cd ..
+    startCommand: uvicorn backend.app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /api/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.9
+      - key: NODE_VERSION
+        value: 20.11.0
